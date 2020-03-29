@@ -7,7 +7,6 @@ export interface OptionLens<T, U> {
     compose: <V>(
         lens: OptionLens<U, V>
     ) => OptionLens<T, Exclude<V, undefined>>;
-    asOptional: () => OptionLens<T, U>;
 }
 
 export const optionLens = <T>() => <U>(
@@ -24,11 +23,6 @@ export const optionLens = <T>() => <U>(
 
             return flatten(map((np: U) => set(x, np))(newProp));
         },
-        asOptional: () =>
-            optionLens<T>()<U>(
-                x => get(x),
-                (a, b) => set(a, b)
-            ),
         compose: l =>
             optionLens<T>()(
                 x => flatten(map(l.get)(get(x))),
