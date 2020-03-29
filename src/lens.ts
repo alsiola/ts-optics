@@ -1,5 +1,5 @@
 import { OptionLens, optionLens } from "./option-lens";
-import { none, some, Option } from "fp-ts/lib/Option";
+import { some, Option, fromNullable } from "fp-ts/lib/Option";
 
 export interface Lens<T, U> {
     get: (a: T) => U;
@@ -18,15 +18,8 @@ export const lens = <T>() => <U>(
         set,
         modify: f => a => set(a, f(get(a))),
         asOptional: () => {
-            const oGet = (x: T) => {
-                const r = get(x);
-                return typeof r === "undefined"
-                    ? none
-                    : (some(r) as Option<Exclude<U, undefined>>);
-            };
-
             return optionLens<T>()(
-                oGet,
+                (x: T) => fromNullable(get(x)) as Option<Exclude<U, undefined>>,
                 (x, a) =>
                     (some(set(x, a)) as any) as Option<Exclude<T, undefined>>
             );
