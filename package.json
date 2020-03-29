@@ -1,12 +1,14 @@
 {
-    "name": "ts-lens",
+    "name": "ts-optics",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "types": "lib/index.d.ts",
     "scripts": {
-        "test": "jest",
-        "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
+        "test": "jest --coverage",
+        "test:codecov": "codecov",
+        "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
+        "build": "tsc"
     },
     "keywords": [],
     "author": "Alex Young",
@@ -16,6 +18,7 @@
         "@types/node": "12",
         "@typescript-eslint/eslint-plugin": "^2.25.0",
         "@typescript-eslint/parser": "^2.25.0",
+        "codecov": "^3.6.5",
         "eslint": "^6.8.0",
         "fp-ts": "^2.5.3",
         "jest": "^25.2.0",
