@@ -5,7 +5,8 @@
     "main": "index.js",
     "types": "lib/index.d.ts",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
     },
     "keywords": [],
     "author": "Alex Young",
@@ -13,6 +14,9 @@
     "devDependencies": {
         "@types/jest": "^25.1.4",
         "@types/node": "12",
+        "@typescript-eslint/eslint-plugin": "^2.25.0",
+        "@typescript-eslint/parser": "^2.25.0",
+        "eslint": "^6.8.0",
         "fp-ts": "^2.5.3",
         "jest": "^25.2.0",
         "ts-jest": "^25.2.1",

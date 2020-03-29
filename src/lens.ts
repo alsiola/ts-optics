@@ -19,7 +19,10 @@ export const lens = <T>() => <U>(
         modify: f => a => set(a, f(get(a))),
         asOptional: () => {
             return optionLens<T>()<Exclude<U, undefined>>(
-                (x: T) => fromNullable(get(x)) as any,
+                (x: T) =>
+                    fromNullable(get(x)) as Option<
+                        Exclude<Exclude<U, undefined>, undefined>
+                    >,
                 (x, a) => some(set(x, a)) as Option<Exclude<T, undefined>>
             );
         },

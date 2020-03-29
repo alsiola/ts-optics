@@ -16,15 +16,17 @@ export const optionLens = <T>() => <U>(
     return {
         get,
         set,
-        modify: f => x => {
+        modify: f => (x): Option<T> => {
             const prop = get(x);
 
             const newProp = map(f)(prop);
 
             return flatten(map((np: U) => set(x, np))(newProp));
         },
-        compose: l =>
-            optionLens<T>()(
+        compose: <V>(
+            l: OptionLens<U, V>
+        ): OptionLens<T, Exclude<V, undefined>> =>
+            (optionLens<T>()(
                 x => flatten(map(l.get)(get(x))),
                 (x, a) =>
                     flatten(
@@ -34,6 +36,6 @@ export const optionLens = <T>() => <U>(
                             )(get(x))
                         )
                     )
-            ) as OptionLens<T, Exclude<any, undefined>>
+            ) as unknown) as OptionLens<T, Exclude<V, undefined>>
     };
 };
