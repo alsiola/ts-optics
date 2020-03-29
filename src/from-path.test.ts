@@ -1,5 +1,6 @@
 import { Required } from "./__fixtures__/user";
 import { fromPath } from "./from-path";
+import { getOrElse, some, none } from "fp-ts/lib/Option";
 
 describe("fromPath", () => {
     let user: Required.User;
@@ -85,5 +86,72 @@ describe("fromPath", () => {
 
         expect(t.xxx[1].bbb).toBe(456);
         expect(actual.xxx[1].bbb).toBe(999);
+    });
+
+    it("modifies a complex array prop as optional", () => {
+        interface T {
+            xxx: Array<{
+                bbb: number;
+            }>;
+        }
+
+        const l = fromPath<T>()("xxx", 1, "bbb").asOptional();
+
+        const t: T = {
+            xxx: [{ bbb: 123 }, { bbb: 456 }]
+        };
+
+        const actual = l.set(t, 999);
+
+        expect(t.xxx[1].bbb).toBe(456);
+        expect(
+            l.get(
+                getOrElse<{}>(() => ({}))(actual) as T
+            )
+        ).toEqual(some(999));
+    });
+
+    it("gets a complex array prop as optional", () => {
+        interface BBB {
+            x?: number;
+        }
+
+        type XXX = Array<BBB>;
+        interface T {
+            xxx?: XXX;
+        }
+
+        const l = fromPath<T>()("xxx")
+            .asOptional()
+            .compose(fromPath<XXX>()(0).asOptional())
+            .compose(fromPath<BBB>()("x").asOptional());
+
+        const t: T = {};
+
+        const actual = l.get(t);
+
+        expect(actual).toBe(none);
+    });
+
+    it("sets a complex array prop as optional", () => {
+        interface BBB {
+            x?: number;
+        }
+
+        type XXX = Array<BBB>;
+        interface T {
+            xxx?: XXX;
+        }
+
+        const l = fromPath<T>()("xxx")
+            .asOptional()
+            .compose(fromPath<XXX>()(0).asOptional())
+            .compose(fromPath<BBB>()("x").asOptional());
+
+        const t: T = {};
+
+        const actual = l.set(t, 456);
+
+        expect(actual).toBe(none);
     });
 });
