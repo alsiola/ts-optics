@@ -1,26 +1,26 @@
 import { lens } from ".";
-import { User, getUser, refUser } from "./__fixtures__/user";
+import { Required } from "./__fixtures__/user";
 
 describe("lens", () => {
-    let user: User;
+    let user: Required.User;
 
     beforeEach(() => {
-        user = getUser();
+        user = Required.getUser();
     });
 
     it("gets a property", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.name,
             (u, name) => ({ ...u, name })
         );
 
         const actual = l.get(user);
 
-        expect(actual).toBe(refUser.name);
+        expect(actual).toBe(Required.refUser.name);
     });
 
     it("sets a property", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.name,
             (u, name) => ({ ...u, name })
         );
@@ -31,23 +31,23 @@ describe("lens", () => {
     });
 
     it("does not mutate when setting", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.name,
             (u, name) => ({ ...u, name })
         );
 
         l.set(user, "Steve");
 
-        expect(user.name).toBe(refUser.name);
+        expect(user.name).toBe(Required.refUser.name);
     });
 
     it("composes getters", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.address,
             (u, address) => ({ ...u, address })
         );
 
-        const l2 = lens<User["address"]>()(
+        const l2 = lens<Required.User["address"]>()(
             a => a.city,
             (a, city) => ({ ...a, city })
         );
@@ -56,16 +56,16 @@ describe("lens", () => {
 
         const actual = l3.get(user);
 
-        expect(actual).toBe(refUser.address.city);
+        expect(actual).toBe(Required.refUser.address.city);
     });
 
     it("composes setters", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.address,
             (u, address) => ({ ...u, address })
         );
 
-        const l2 = lens<User["address"]>()(
+        const l2 = lens<Required.User["address"]>()(
             a => a.city,
             (a, city) => ({ ...a, city })
         );
@@ -78,12 +78,12 @@ describe("lens", () => {
     });
 
     it("composes setters without mutation", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.address,
             (u, address) => ({ ...u, address })
         );
 
-        const l2 = lens<User["address"]>()(
+        const l2 = lens<Required.User["address"]>()(
             a => a.city,
             (a, city) => ({ ...a, city })
         );
@@ -92,11 +92,11 @@ describe("lens", () => {
 
         l3.set(user, "Newcastle");
 
-        expect(user.address.city).toBe(refUser.address.city);
+        expect(user.address.city).toBe(Required.refUser.address.city);
     });
 
     it("modifies using an updater", () => {
-        const l = lens<User>()(
+        const l = lens<Required.User>()(
             u => u.name,
             (u, name) => ({ ...u, name })
         );
@@ -105,6 +105,6 @@ describe("lens", () => {
 
         const actual = updater(user);
 
-        expect(actual.name).toBe(refUser.name.toUpperCase());
+        expect(actual.name).toBe(Required.refUser.name.toUpperCase());
     });
 });

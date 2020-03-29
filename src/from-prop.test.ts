@@ -1,23 +1,23 @@
-import { User, getUser, refUser } from "./__fixtures__/user";
+import { Required } from "./__fixtures__/user";
 import { fromProp } from "./from-prop";
 
 describe("fromProp", () => {
-    let user: User;
+    let user: Required.User;
 
     beforeEach(() => {
-        user = getUser();
+        user = Required.getUser();
     });
 
     it("gets a property", () => {
-        const l = fromProp<User>()("name");
+        const l = fromProp<Required.User>()("name");
 
         const actual = l.get(user);
 
-        expect(actual).toBe(refUser.name);
+        expect(actual).toBe(Required.refUser.name);
     });
 
     it("sets a property", () => {
-        const l = fromProp<User>()("name");
+        const l = fromProp<Required.User>()("name");
 
         const actual = l.set(user, "Steve");
 
@@ -25,29 +25,29 @@ describe("fromProp", () => {
     });
 
     it("does not mutate when setting", () => {
-        const l = fromProp<User>()("name");
+        const l = fromProp<Required.User>()("name");
 
         l.set(user, "Steve");
 
-        expect(user.name).toBe(refUser.name);
+        expect(user.name).toBe(Required.refUser.name);
     });
 
     it("composes getters", () => {
-        const l = fromProp<User>()("address");
+        const l = fromProp<Required.User>()("address");
 
-        const l2 = fromProp<User["address"]>()("city");
+        const l2 = fromProp<Required.User["address"]>()("city");
 
         const l3 = l.compose(l2);
 
         const actual = l3.get(user);
 
-        expect(actual).toBe(refUser.address.city);
+        expect(actual).toBe(Required.refUser.address.city);
     });
 
     it("composes setters", () => {
-        const l = fromProp<User>()("address");
+        const l = fromProp<Required.User>()("address");
 
-        const l2 = fromProp<User["address"]>()("city");
+        const l2 = fromProp<Required.User["address"]>()("city");
 
         const l3 = l.compose(l2);
 
@@ -57,25 +57,25 @@ describe("fromProp", () => {
     });
 
     it("composes setters without mutation", () => {
-        const l = fromProp<User>()("address");
+        const l = fromProp<Required.User>()("address");
 
-        const l2 = fromProp<User["address"]>()("city");
+        const l2 = fromProp<Required.User["address"]>()("city");
 
         const l3 = l.compose(l2);
 
         l3.set(user, "Newcastle");
 
-        expect(user.address.city).toBe(refUser.address.city);
+        expect(user.address.city).toBe(Required.refUser.address.city);
     });
 
     it("modifies using an updater", () => {
-        const l = fromProp<User>()("name");
+        const l = fromProp<Required.User>()("name");
 
         const updater = l.modify(n => n.toUpperCase());
 
         const actual = updater(user);
 
-        expect(actual.name).toBe(refUser.name.toUpperCase());
+        expect(actual.name).toBe(Required.refUser.name.toUpperCase());
     });
 
     it("modifies an array element", () => {

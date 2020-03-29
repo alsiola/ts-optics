@@ -6,7 +6,7 @@ export interface Lens<T, U> {
     set: (a: T, b: U) => T;
     modify: (f: (a: U) => U) => (b: T) => T;
     compose: <V>(lens: Lens<U, V>) => Lens<T, V>;
-    asOptional: () => OptionLens<T, U>;
+    asOptional: () => OptionLens<T, Exclude<U, undefined>>;
 }
 
 export const lens = <T>() => <U>(
@@ -18,10 +18,9 @@ export const lens = <T>() => <U>(
         set,
         modify: f => a => set(a, f(get(a))),
         asOptional: () => {
-            return optionLens<T>()(
-                (x: T) => fromNullable(get(x)) as Option<Exclude<U, undefined>>,
-                (x, a) =>
-                    (some(set(x, a)) as any) as Option<Exclude<T, undefined>>
+            return optionLens<T>()<Exclude<U, undefined>>(
+                (x: T) => fromNullable(get(x)) as any,
+                (x, a) => some(set(x, a)) as Option<Exclude<T, undefined>>
             );
         },
         compose: l =>

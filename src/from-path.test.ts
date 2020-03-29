@@ -1,23 +1,23 @@
-import { User, getUser, refUser } from "./__fixtures__/user";
+import { Required } from "./__fixtures__/user";
 import { fromPath } from "./from-path";
 
 describe("fromPath", () => {
-    let user: User;
+    let user: Required.User;
 
     beforeEach(() => {
-        user = getUser();
+        user = Required.getUser();
     });
 
     it("gets a property", () => {
-        const l = fromPath<User>()("name");
+        const l = fromPath<Required.User>()("name");
 
         const actual = l.get(user);
 
-        expect(actual).toBe(refUser.name);
+        expect(actual).toBe(Required.refUser.name);
     });
 
     it("sets a property", () => {
-        const l = fromPath<User>()("name");
+        const l = fromPath<Required.User>()("name");
 
         const actual = l.set(user, "Steve");
 
@@ -25,23 +25,23 @@ describe("fromPath", () => {
     });
 
     it("does not mutate when setting", () => {
-        const l = fromPath<User>()("name");
+        const l = fromPath<Required.User>()("name");
 
         l.set(user, "Steve");
 
-        expect(user.name).toBe(refUser.name);
+        expect(user.name).toBe(Required.refUser.name);
     });
 
     it("composes getters", () => {
-        const l = fromPath<User>()("address", "city");
+        const l = fromPath<Required.User>()("address", "city");
 
         const actual = l.get(user);
 
-        expect(actual).toBe(refUser.address.city);
+        expect(actual).toBe(Required.refUser.address.city);
     });
 
     it("composes setters", () => {
-        const l = fromPath<User>()("address", "city");
+        const l = fromPath<Required.User>()("address", "city");
 
         const actual = l.set(user, "Newcastle");
 
@@ -49,21 +49,23 @@ describe("fromPath", () => {
     });
 
     it("composes setters without mutation", () => {
-        const l = fromPath<User>()("address", "city");
+        const l = fromPath<Required.User>()("address", "city");
 
         l.set(user, "Newcastle");
 
-        expect(user.address.city).toBe(refUser.address.city);
+        expect(user.address.city).toBe(Required.refUser.address.city);
     });
 
     it("modifies using an updater", () => {
-        const l = fromPath<User>()("address", "city");
+        const l = fromPath<Required.User>()("address", "city");
 
         const updater = l.modify(n => n.toUpperCase());
 
         const actual = updater(user);
 
-        expect(actual.address.city).toBe(refUser.address.city.toUpperCase());
+        expect(actual.address.city).toBe(
+            Required.refUser.address.city.toUpperCase()
+        );
     });
 
     it("modifies a complex array prop", () => {
