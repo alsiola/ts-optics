@@ -65,4 +65,23 @@ describe("fromPath", () => {
 
         expect(actual.address.city).toBe(refUser.address.city.toUpperCase());
     });
+
+    it("modifies a complex array prop", () => {
+        interface T {
+            xxx: Array<{
+                bbb: number;
+            }>;
+        }
+
+        const l = fromPath<T>()("xxx", 1, "bbb");
+
+        const t: T = {
+            xxx: [{ bbb: 123 }, { bbb: 456 }]
+        };
+
+        const actual = l.set(t, 999);
+
+        expect(t.xxx[1].bbb).toBe(456);
+        expect(actual.xxx[1].bbb).toBe(999);
+    });
 });

@@ -77,4 +77,16 @@ describe("fromProp", () => {
 
         expect(actual.name).toBe(refUser.name.toUpperCase());
     });
+
+    it("modifies an array element", () => {
+        type T = string[];
+
+        const l = fromProp<T>()(0);
+
+        const t: T = ["hello", "there"];
+
+        const actual = l.set(t, "goodbye");
+
+        expect(actual).toEqual(["goodbye", "there"]);
+    });
 });
