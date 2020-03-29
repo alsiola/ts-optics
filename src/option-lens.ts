@@ -1,7 +1,8 @@
-import { Option, map, flatten } from "fp-ts/lib/Option";
+import { Option, map, flatten, getOrElse } from "fp-ts/lib/Option";
 
 export interface OptionLens<T, U> {
     get: (a: T) => Option<Exclude<U, undefined>>;
+    getOrElse: (a: T, b: U) => U;
     set: (a: T, b: U) => Option<Exclude<T, undefined>>;
     modify: (f: (a: U) => U) => (b: T) => Option<T>;
     compose: <V>(
@@ -15,6 +16,7 @@ export const optionLens = <T>() => <U>(
 ): OptionLens<T, U> => {
     return {
         get,
+        getOrElse: (a, b) => getOrElse(() => b)(get(a)),
         set,
         modify: f => (x): Option<T> => {
             const prop = get(x);
