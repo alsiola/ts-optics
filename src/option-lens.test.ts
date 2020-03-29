@@ -32,7 +32,7 @@ describe("optionLens", () => {
         expect(actual).toEqual(none);
     });
 
-    it("composes and gets none for missing property", () => {
+    it("composes and gets some for present property", () => {
         const l = fromProp<Optional.User>()("address").asOptional();
         const m = fromProp<Optional.Address>()("city").asOptional();
 
@@ -41,5 +41,35 @@ describe("optionLens", () => {
         const actual = n.get(Required.getUser());
 
         expect(actual).toEqual(some(Required.refUser.address.city));
+    });
+
+    it("modifies and gets none for missing property", () => {
+        const l = fromProp<Optional.User>()("address").asOptional();
+        const m = fromProp<Optional.Address>()("city").asOptional();
+
+        const n = l.compose(m).modify(s => s.toUpperCase());
+
+        const actual = n(user);
+
+        expect(actual).toEqual(none);
+    });
+
+    it("composes and gets some for present property", () => {
+        const l = fromProp<Optional.User>()("address").asOptional();
+        const m = fromProp<Optional.Address>()("city").asOptional();
+
+        const n = l.compose(m).modify(s => s.toUpperCase());
+
+        const actual = n(Required.getUser());
+
+        expect(actual).toEqual(
+            some({
+                ...Required.refUser,
+                address: {
+                    ...Required.refUser.address,
+                    city: Required.refUser.address.city.toUpperCase()
+                }
+            })
+        );
     });
 });
