@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+/* istanbul ignore file */
 export namespace Required {
     export interface User {
         id: string;
